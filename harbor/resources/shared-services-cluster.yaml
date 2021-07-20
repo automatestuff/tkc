@@ -1,0 +1,30 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1
+kind: TanzuKubernetesCluster
+metadata:
+  name: sharedservices
+spec:
+  topology:
+    controlPlane:
+      count: 1
+      class: best-effort-medium
+      storageClass: STORAGE_CLASS_GOES_HERE
+      volumes:
+        - name: containerd
+          mountPath: /var/lib/containerd
+          capacity:
+            storage: 100Gi
+    workers:
+      count: 3
+      class: best-effort-medium
+      storageClass: STORAGE_CLASS_GOES_HERE
+      volumes:
+        - name: containerd
+          mountPath: /var/lib/containerd
+          capacity:
+            storage: 100Gi
+  settings:
+    storage:
+      classes: ["STORAGE_CLASS_GOES_HERE"]
+      defaultClass: STORAGE_CLASS_GOES_HERE
+  distribution:
+    version: v1.19.7

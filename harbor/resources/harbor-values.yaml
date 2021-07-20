@@ -1,0 +1,20 @@
+global:
+  storageClass: "STORAGE_CLASS_GOES_HERE"
+
+persistence:
+  persistentVolumeClaim:
+    database:
+      size: 1024Gi
+
+tls:
+  secretName: ca-key-pair
+externalURL: https://harbor.DOMAIN_FQDN_GOES_HERE
+harborAdminPassword: admin
+ingress:
+  hosts:
+    core: harbor.DOMAIN_FQDN_GOES_HERE
+    notary: notary.DOMAIN_FQDN_GOES_HERE
+  enabled: true
+service:
+  tls:
+    commonName: harbor.DOMAIN_FQDN_GOES_HERE

@@ -1,0 +1,30 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1       #Tanzu Kubernetes Grid (TKG) API endpoint
+kind: TanzuKubernetesCluster                    #Tanzu Kubernetes Cluster (TKC) kind
+metadata:
+  name: sharedservices                          #cluster name
+spec:
+  distribution:
+    version: v1.19.7                            #Tanzu Kubernetes Release (TKR) version
+  topology:
+    controlPlane:
+      count: 1                                  #number of control plane nodes
+      class: best-effort-medium                 #vmclass for control plane nodes
+      storageClass: standard                    #storageclass for control plane
+      volumes:
+        - name: containerd
+          mountPath: /var/lib/containerd        #storage mount path for control plane nodes
+          capacity:
+            storage: 100Gi                      #storage capacity for control plane nodes
+    workers:
+      count: 3                                  #number of worker nodes
+      class: best-effort-medium                 #vmclass for worker nodes
+      storageClass: standard                    #storageclass for worker nodes
+      volumes:
+        - name: containerd
+          mountPath: /var/lib/containerd        #storage mount path for worker nodes
+          capacity:
+            storage: 100Gi                      #storage capacity for worker nodes
+  settings:
+    storage:
+      classes: ["standard"]
+      defaultClass: standard

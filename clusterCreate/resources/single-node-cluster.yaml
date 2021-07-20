@@ -1,11 +1,10 @@
-apiVersion: run.tanzu.vmware.com/v1alpha1       #TKG API endpoint
-kind: TanzuKubernetesCluster                    #required parameter
+apiVersion: run.tanzu.vmware.com/v1alpha1       #Tanzu Kubernetes Grid (TKG) API endpoint
+kind: TanzuKubernetesCluster                    #Tanzu Kubernetes Cluster (TKC) kind
 metadata:
-  name: tkgs-labs01-k8s                         #cluster name, user defined
-  namespace: workload01                         #supervisor namespace
+  name: tkcSingeNodeCluster                     #cluster name
 spec:
   distribution:
-    version: v1.18  #Resolves to the latest v1.18 image (v1.17.8+vmware.1-tkg.1.5417466)
+    version: v1.18                              #Tanzu Kubernetes Release (TKR) version
   topology:
     controlPlane:
       count: 1                                  #number of control plane nodes

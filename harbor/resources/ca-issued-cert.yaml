@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ca-key-pair
+  annotations:
+    cert-manager.io/alt-names: '*.DOMAIN_FQDN_GOES_HERE,DOMAIN_FQDN_GOES_HERE'
+    cert-manager.io/certificate-name: ca-crt
+    cert-manager.io/common-name: DOMAIN_FQDN_GOES_HERE
+    cert-manager.io/ip-sans: ""
+    cert-manager.io/issuer-group: ""
+    cert-manager.io/issuer-kind: Issuer
+    cert-manager.io/issuer-name: ca-issuer
+    cert-manager.io/uri-sans: ""
+data:
+  tls.crt: BASE64_ENCODED_CERT_STRING_GOES_HERE
+  tls.key: BASE64_ENCODED_KEY_STRING_GOES_HERE
