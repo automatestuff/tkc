@@ -1,0 +1,31 @@
+apiVersion: run.tanzu.vmware.com/v1alpha2         #TKG API endpoint
+kind: TanzuKubernetesCluster
+metadata:
+  name: shared-services                           #Cluster Name (user defined)
+spec:
+  topology:
+    controlPlane:
+      replicas: 1                                 #Number of Control Plane node/s
+      vmClass: best-effort-small                  #vmClass for Control Plane node/s
+      storageClass: tanzu-lab-storage             #storageClass for Control Plane node/s
+      volumes:
+        - name: containerd
+          mountPath: /var/lib/containerd
+          capacity:
+            storage: 100Gi
+      tkr:  
+        reference:
+          name: v1.21.2---vmware.1-tkg.1.ee25d55  #TKR versions
+    nodePools:
+    - name: workers
+      replicas: 3                                 #Number of Worker node/s
+      vmClass: best-effort-medium                 #vmClass for Worker node/s
+      storageClass: tanzu-lab-storage             #storageClass for Worker node/s
+      volumes:
+        - name: containerd
+          mountPath: /var/lib/containerd
+          capacity:
+            storage: 100Gi
+      tkr:  
+        reference:
+          name: v1.21.2---vmware.1-tkg.1.ee25d55  #TKR versions
