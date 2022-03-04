@@ -1,77 +1,107 @@
-#@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:data", "data")
-
----
 apiVersion: v1
 kind: Secret
 metadata:
   name:  harbor-harbor-values
-  namespace: kapp-gitops-mgmt
+  namespace: vmtools
 type: Opaque
 stringData:
   harbor-values.yaml: |
     namespace: harbor
-    hostname: harbor.clust2.haas-417.pez.vmware.com
+    hostname: harbor.lab03.virtual.automatestuff.io
     port:
       https: 443
     logLevel: info
     tlsCertificate:
       tls.crt: |
         -----BEGIN CERTIFICATE-----
-        MIIEKTCCAhGgAwIBAgIRAKfL2R0uId+eDdW5AbmvJ1EwDQYJKoZIhvcNAQELBQAw
-        EjEQMA4GA1UEAxMHdG9tcy1jYTAeFw0yMTEwMTkxNjE4MzFaFw0yMjA0MDExMzA3
-        MTNaMBsxGTAXBgNVBAMMECouZGV2LmRscHZtdy5uZXQwggEiMA0GCSqGSIb3DQEB
-        AQUAA4IBDwAwggEKAoIBAQC4M5Xkl4x8YMVsPPKpNSLD/umvXf0giaknBzsKrOP/
-        bDDGjfQLgfMEMVWh1EsFlPEF3zM0IpokijGujyOfut3oNuwDwqTBw8bycAUM86mO
-        uARiR/NjHukqvJ3qV76rzEyUTDR10wr6cChO/y1boFlZBw9UWe6SNqRgai5x+Kll
-        MCJJFYw8zxekH8/mi9lWpAl53OSTty5VyShz1nY2BP8NxKKdZMQiwUly4CMJ83aL
-        vwgVDg4xDN4KI0afzWt/B55zco+/bh029cA+A4AVIsXTONVJq+dXVt0sNDkuvkdj
-        GL3YUq/uZzv4xJa+YjT1W+cCmHrcoG3Oi0p0P/ale2YJAgMBAAGjcTBvMA4GA1Ud
-        DwEB/wQEAwIDuDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwHQYDVR0O
-        BBYEFDtkaDNy6DQAkjFSANLsZfpcbZDQMB8GA1UdIwQYMBaAFBCRIl1QVSywKx5g
-        xk0ilC437YjKMA0GCSqGSIb3DQEBCwUAA4ICAQAcUPumQ1w9HhTXw0Jqqgt/OFII
-        oHysm0VCNbTaf+ZxJ9xXwMvM3y9rpfZOFrkwVVdD5j0YxAyWAT7uFqtm6OtwT6oa
-        GItvbio4NPlmGj2zaTgrC5yfZqmY+aruGMc1dJmdIOoJJP5jSQxKDpNNmU/Dlh9/
-        X+t/CjYVmgemPMH8tADj966n3Qw0VljVvMdfIjgRSmBC4ohLlAOaqUOQJ2sJUlpT
-        6Ukrl/tKc6OKeqPx9/TUm54Ad15fm5KF3OLfvKNIa6Ie84nxe2qggD09KVl+zW+s
-        knkNkraVpaB+TNRbNSed6z8otvgwWnPEXxAMvu7xA23fGL7jUM3PblNTz7Fho43M
-        tYLYifawqimQagzoOiKiD55k06qgRZYHG+921WuYKd/aZFuFMmw5vHW7zYvgoAkd
-        NjFdVqqE81Jj+/x6ilfz5p4xCQATQz+7yChp2YWdQ1MlX8XXrWgZ0p1abDUSA4aN
-        qpSmKfokMCwpPv78KKDoGkh2mtdx0S4jyda3ahn29RMLbX5plLGtWtsxGrQRYLL2
-        deXa66DrPWX5WlzP6ZmyONWmYCGoVsDBCcxGLXe+lYIE2Wjg+gASAd3DxJeRgD5F
-        jPdVg7OpeUnULRoHAXbhSpxKxihK2Ue45hkYEYbBNsDJYesecsVPFcasj1MxkGbh
-        Dg42a/V7da1ZYi9Eag==
+        MIIF/TCCA+WgAwIBAgIUZtEKhHk1xsaKPtCPJfLkiy0dX18wDQYJKoZIhvcNAQEN
+        BQAwazELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAlROMREwDwYDVQQHDAhSb2Nrd29v
+        ZDEMMAoGA1UECgwDTGFiMQswCQYDVQQLDAIwMzEhMB8GA1UEAwwYdmlydHVhbC5h
+        dXRvbWF0ZXN0dWZmLmlvMB4XDTIyMDMwNDIxMzM0MVoXDTMyMDMwMTIxMzM0MVow
+        eDELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAlROMREwDwYDVQQHDAhSb2Nrd29vZDEM
+        MAoGA1UECgwDTGFiMQswCQYDVQQLDAIwMzEuMCwGA1UEAwwlaGFyYm9yLmxhYjAz
+        LnZpcnR1YWwuYXV0b21hdGVzdHVmZi5pbzCCAiIwDQYJKoZIhvcNAQEBBQADggIP
+        ADCCAgoCggIBAKgJCq3eDVTTtgHFYHdtdmb6BoLB4lwNo4MeAnTFUtJibE9QOkAp
+        WAX9tCx1pRyEiPGmphevgieiU5ovh2vCBwgR9q4EuBXHl16HmOlaMBBidTav7BQO
+        NhK3RQARh0M1rX2yzjmHEN/GQYJov26yx6yS+KFoGwaeEP0bKR92U5iO5s/H6d+D
+        61EY2PJaOzHXlwEqB1OlqhmduXDtj5NYC72xSoPXWkDb41XIo1kQP8O8iUixGIKY
+        hrX/6XxpWbOkf4vBBhHGWPNsTnVf/9KuHIM6veUIF2xu45pm2kdIXylyl7U+vust
+        BQQmyJlbDjfHgVrLue55UqM+uM59ZpW0nowWvwBDeliYRH99bE5F+nV/hs85qfgY
+        c/c/0tr1oskQLUAAF/jyNOQsFThtcpLAqPsDGIpXRMN0o7uPQt/IpfxwGZ5IImtW
+        pzbHUTFb6SJXB1GP2Ir5TjqHs+FSXLaWg8LYE5x1UHRTT4w0iYpk0cZo8Cvt2cP5
+        WUHQMwv9cKBPR4jSyTGy3/b1s42RgscAyBE/NtBsStcnuTciAWBhwtz9+VOwRijc
+        SV1cUSjfcc/WgXGUN5sLt5UoVDs/zr5Q+6yxJuuT4aBSRHMFCFeAgvMA8n/o7Ex/
+        hN4BVpYdDeahEtnBvQ6lWwSJgIjSSWQ+UjA08P7DoQ6tP5kelQiS7G1zAgMBAAGj
+        gYswgYgwHwYDVR0jBBgwFoAUlbFTEi04ocYIH+Z92sU5upglOSwwCQYDVR0TBAIw
+        ADALBgNVHQ8EBAMCBPAwEwYDVR0lBAwwCgYIKwYBBQUHAwEwOAYDVR0RBDEwL4Il
+        aGFyYm9yLmxhYjAzLnZpcnR1YWwuYXV0b21hdGVzdHVmZi5pb4IGaGFyYm9yMA0G
+        CSqGSIb3DQEBDQUAA4ICAQDgYqh3GviVFMPFQif27rh4fxnqmEmyjoAwtLEKfLD8
+        DJna/bth7QqEdndAdi6XkuPzGbYz1Im/9NoKAuNoCKtxleI24scIl1aGczMntYfR
+        LAhpofgtKRY9SjqFIaRVEfxpdGqPao+h0OxLL6knVNfIh0Z0lOhFKBQRGiBXDHnd
+        JpYeFNsPx6gLrPXyn97x3mn+yoBIWlb9QKhVnjuST+xQC3mXfL1LgLcliROrI+cY
+        Ei1OII9Zn1uwBdnUftvbsz3luWbTIDcimja3ste1+Q4pJ+Mf8ZV3JAQ4+3NZEHwz
+        8aDa5fBCNKIrVeFMfJw1+Wv+df8RxWBn1mTstjeFBe/qQTBsfQK+D4AiWu89rlDG
+        Jjn7RQfLcat8RUmwsuhSp1HNDj7dAXv3oaWMA4mNN/AlP2WnAZhsugBgbfLg4VpF
+        ZIM4BZCYPS+pLhZrM4qgMgS+l8fj3n9f9k7Q16WgGN9n1MNbMtd8bvEcVXrc6Eld
+        ZTGZyanEhh/Mv7bCO1UNAo7eX0KT2IAqjmBlCSy6bDVY41LLUgeO33EPGiV1R9Tz
+        hN7OUfTvTU+GshC4yJUOAJQUQj/OYJUAioasDN3lQ0FVgWoy/Ni2KEuxkeI8jE02
+        HAiMFH5fK9zXlz5rrT+ZFkxBI9Vy0xerzbyuHx1nusb2Qv7iS72QxHLhBkFwJw0f
+        lg==
         -----END CERTIFICATE-----
       tls.key: |
         -----BEGIN RSA PRIVATE KEY-----
-        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
+        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
         -----END RSA PRIVATE KEY-----
     enableContourHttpProxy: false
-    harborAdminPassword: Eo1C28ANodKFmoNQ
+    harborAdminPassword: Harbor12345
     secretKey: CFbcoIimPaaxlzIF
     database:
       password: 2NVlqclAwSAkgSQZ
