@@ -13,7 +13,7 @@ spec:
           mountPath: /var/lib/containerd
           capacity:
             storage: 100Gi
-      tkr:  
+      tkr:
         reference:
           name: v1.21.2---vmware.1-tkg.1.ee25d55  #TKR versions
     nodePools:
@@ -26,6 +26,9 @@ spec:
           mountPath: /var/lib/containerd
           capacity:
             storage: 100Gi
-      tkr:  
+      tkr:
         reference:
           name: v1.21.2---vmware.1-tkg.1.ee25d55  #TKR versions
+  settings:
+    storage:
+      defaultClass: tanzu-lab-storage
