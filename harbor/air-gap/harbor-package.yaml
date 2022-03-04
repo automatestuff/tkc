@@ -1,16 +1,13 @@
-#@ load("@ytt:data", "data")
-
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: harbor-harbor-sa    
-  namespace: kapp-gitops-mgmt
+  name: harbor-harbor-sa
+  namespace: vmtools
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: harbor-harbor-cluster-role    
+  name: harbor-harbor-cluster-role
 rules:
 - apiGroups:
   - '*'
@@ -30,26 +27,26 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: harbor-harbor-sa
-  namespace: kapp-gitops-mgmt
+  namespace: vmtools
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: harbor-harbor-sa
-  namespace: kapp-gitops-mgmt
+  namespace: vmtools
 ---
 apiVersion: packaging.carvel.dev/v1alpha1
-kind: PackageInstall 
+kind: PackageInstall
 metadata:
   name: harbor
-  namespace: kapp-gitops-mgmt
-spec:                      
+  namespace: vmtools
+spec:
   packageRef:
     refName: harbor.tanzu.vmware.com
     versionSelection:
       constraints: 2.2.3+vmware.1-tkg.1
-      prereleases: {}  
+      prereleases: {}
   serviceAccountName: harbor-harbor-sa
-  values:  
+  values:
   - secretRef:
       name: harbor-harbor-values
