@@ -1,0 +1,9 @@
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageRepository
+metadata:
+  name: tanzu-standard
+  namespace: test-namespace
+spec:
+  fetch:
+    imgpkgBundle:
+      image: harbor.automatestuff.io/harbor/tanzu-standard@sha256:ff1f86ec509bc9be7007a441d52dab6df68ab4741f25d312404b8a3e57030aaf;
