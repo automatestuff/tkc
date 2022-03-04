@@ -31,4 +31,4 @@ spec:
           name: v1.21.2---vmware.1-tkg.1.ee25d55  #TKR versions
   settings:
     storage:
-      defaultClass: tanzu-lab-storage
+      defaultClass: tanzu-lab-storage             #set default storageClass
