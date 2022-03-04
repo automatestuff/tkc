@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: contour-contour-values
+  namespace: vmtools
+type: Opaque
+stringData:
+  contour-values.yaml: |
+    infrastructure_provider: vsphere
+    namespace: contour
+    contour:
+     configFileContents: {}
+     useProxyProtocol: false
+     replicas: 2
+     pspNames: "vmware-system-restricted"
+     logLevel: info
+    envoy:
+     service:
+       type: LoadBalancer
+       annotations: {}
+       nodePorts:
+         http: null
+         https: null
+       externalTrafficPolicy: Cluster
+       disableWait: false
+     hostPorts:
+       enable: true
+       http: 80
+       https: 443
+     hostNetwork: false
+     terminationGracePeriodSeconds: 300
+     logLevel: info
+     pspNames: null
+    certificates:
+     duration: 8760h
+     renewBefore: 360h
