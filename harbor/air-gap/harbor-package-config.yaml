@@ -1,0 +1,317 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: contour-lb-ip-overlay
+  namespace: kapp-gitops-mgmt
+type: Opaque
+stringData:
+  ip-overlay.yaml: |
+    #@ load("@ytt:overlay", "overlay")
+    #@ load("@ytt:data", "data")
+     
+    #@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name":"envoy"}})
+    ---
+    spec:
+      #@overlay/match missing_ok=True
+      loadBalancerIP: 10.213.222.69
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-grafana-values
+  namespace: kapp-gitops-mgmt
+type: Opaque
+stringData:
+  prom-values.yaml: |
+    ---
+    grafana:
+      service:
+        type: ClusterIP
+        port: 80
+        targetPort: 3000
+        labels: {}
+        annotations: {}
+      config:
+        datasource_yaml: |-
+          apiVersion: 1
+          datasources:
+            - name: Prometheus
+              type: prometheus
+              url: prometheus-server.tanzu-system-monitoring.svc.cluster.local
+              access: proxy
+              isDefault: true
+    namespace: tanzu-system-dashboard
+    
+    ingress:
+      enabled: true
+      virtual_host_fqdn: "grafana.clust2.haas-417.pez.vmware.com"
+      prefix: "/"
+      servicePort: 80
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: contour-contour-values
+  namespace: kapp-gitops-mgmt
+type: Opaque
+stringData:
+  contour-values.yaml: |
+    infrastructure_provider: azure
+    namespace: contour
+    contour:
+     configFileContents: {}
+     useProxyProtocol: false
+     replicas: 2
+     pspNames: "vmware-system-restricted"
+     logLevel: info
+    envoy:
+     service:
+       type: LoadBalancer
+       annotations: {}
+       nodePorts:
+         http: null
+         https: null
+       externalTrafficPolicy: Cluster
+       disableWait: false
+     hostPorts:
+       enable: true
+       http: 80
+       https: 443
+     hostNetwork: false
+     terminationGracePeriodSeconds: 300
+     logLevel: info
+     pspNames: null
+    certificates:
+     duration: 8760h
+     renewBefore: 360h
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name:  harbor-harbor-values
+  namespace: kapp-gitops-mgmt
+type: Opaque
+stringData:
+  harbor-values.yaml: |
+    namespace: harbor
+    hostname: harbor.clust2.haas-417.pez.vmware.com
+    port:
+      https: 443
+    logLevel: info
+    tlsCertificate:
+      tls.crt: |
+        -----BEGIN CERTIFICATE-----
+        MIIEKTCCAhGgAwIBAgIRAKfL2R0uId+eDdW5AbmvJ1EwDQYJKoZIhvcNAQELBQAw
+        EjEQMA4GA1UEAxMHdG9tcy1jYTAeFw0yMTEwMTkxNjE4MzFaFw0yMjA0MDExMzA3
+        MTNaMBsxGTAXBgNVBAMMECouZGV2LmRscHZtdy5uZXQwggEiMA0GCSqGSIb3DQEB
+        AQUAA4IBDwAwggEKAoIBAQC4M5Xkl4x8YMVsPPKpNSLD/umvXf0giaknBzsKrOP/
+        bDDGjfQLgfMEMVWh1EsFlPEF3zM0IpokijGujyOfut3oNuwDwqTBw8bycAUM86mO
+        uARiR/NjHukqvJ3qV76rzEyUTDR10wr6cChO/y1boFlZBw9UWe6SNqRgai5x+Kll
+        MCJJFYw8zxekH8/mi9lWpAl53OSTty5VyShz1nY2BP8NxKKdZMQiwUly4CMJ83aL
+        vwgVDg4xDN4KI0afzWt/B55zco+/bh029cA+A4AVIsXTONVJq+dXVt0sNDkuvkdj
+        GL3YUq/uZzv4xJa+YjT1W+cCmHrcoG3Oi0p0P/ale2YJAgMBAAGjcTBvMA4GA1Ud
+        DwEB/wQEAwIDuDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwHQYDVR0O
+        BBYEFDtkaDNy6DQAkjFSANLsZfpcbZDQMB8GA1UdIwQYMBaAFBCRIl1QVSywKx5g
+        xk0ilC437YjKMA0GCSqGSIb3DQEBCwUAA4ICAQAcUPumQ1w9HhTXw0Jqqgt/OFII
+        oHysm0VCNbTaf+ZxJ9xXwMvM3y9rpfZOFrkwVVdD5j0YxAyWAT7uFqtm6OtwT6oa
+        GItvbio4NPlmGj2zaTgrC5yfZqmY+aruGMc1dJmdIOoJJP5jSQxKDpNNmU/Dlh9/
+        X+t/CjYVmgemPMH8tADj966n3Qw0VljVvMdfIjgRSmBC4ohLlAOaqUOQJ2sJUlpT
+        6Ukrl/tKc6OKeqPx9/TUm54Ad15fm5KF3OLfvKNIa6Ie84nxe2qggD09KVl+zW+s
+        knkNkraVpaB+TNRbNSed6z8otvgwWnPEXxAMvu7xA23fGL7jUM3PblNTz7Fho43M
+        tYLYifawqimQagzoOiKiD55k06qgRZYHG+921WuYKd/aZFuFMmw5vHW7zYvgoAkd
+        NjFdVqqE81Jj+/x6ilfz5p4xCQATQz+7yChp2YWdQ1MlX8XXrWgZ0p1abDUSA4aN
+        qpSmKfokMCwpPv78KKDoGkh2mtdx0S4jyda3ahn29RMLbX5plLGtWtsxGrQRYLL2
+        deXa66DrPWX5WlzP6ZmyONWmYCGoVsDBCcxGLXe+lYIE2Wjg+gASAd3DxJeRgD5F
+        jPdVg7OpeUnULRoHAXbhSpxKxihK2Ue45hkYEYbBNsDJYesecsVPFcasj1MxkGbh
+        Dg42a/V7da1ZYi9Eag==
+        -----END CERTIFICATE-----
+        -----BEGIN CERTIFICATE-----
+        MIIE5DCCAsygAwIBAgIBATANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDEwd0b21z
+        LWNhMB4XDTIwMTAwMTEzMDcxNVoXDTIyMDQwMTEzMDcxM1owEjEQMA4GA1UEAxMH
+        dG9tcy1jYTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAKASLMKo4iaQ
+        JCr/Mdxag2/fHeHis7uBDv4+mBGMix/o3AGlqXuckfqFdaauoSUGbO61CZMjAzFX
+        kBWVFQboaasX9o4u63gn9jrBR0YUj4POviLeYbBiZHho5+pTjpK9sutC4vVs9eY3
+        soW4GSZoz3vL23JLLqUTCtur4IFV81PB70QPr7laR3rj6loI2qFJ4MdT8i/6Mzlx
+        05XMiI7cRE4/cLXkLZNZkSszfX8esXhBU6DVI5iQdaVe1OLp+Q7JleORu4sZkmhw
+        9IXKRlMOvDW/RwxErfTW5uEIwBR7balJ2u/IgKwtxmPtbAS94Fy2UrcgIeZxrZf6
+        f44SfsgiGSEguH/nkHXsw0qEkgNsrUF8E8Tesjm08esT9sdJ/M/6AhLBtt3EhT7L
+        rfIr6Rh3HR77lDvxLA6nu9ouT+XOYAVx8xjrRjzRgAMr2mNOSdSUywcyDj6YtJ66
+        kSSXamJvpedCeaeRRr6Won+zRZ6b1ElD5jUf7CevjoW67y9Gh8E2mlpIhk9vprOx
+        jLjolzgDCAulnoGKD/fmVuYd1I2L9D5muAH4cYGpn1p2KRARb6gd3UKJn0NMJsyo
+        M5BgTDuHOfTxWPB+TX7dxmScCOWgk05XkczXfaR85rDnqfzjInAnZ85Pqc004gcN
+        xLFNdtUIdDmj4K4oJB1nT0vCsun23mERAgMBAAGjRTBDMA4GA1UdDwEB/wQEAwIB
+        BjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdDgQWBBQQkSJdUFUssCseYMZNIpQu
+        N+2IyjANBgkqhkiG9w0BAQsFAAOCAgEADBfw/iR2ugBRovtdDKNxE5CJ7qtW0AFK
+        Zjo/fAFPsNR/q8lIRmIewWMRTVi7KJiL9bidbJ6OMbXWTAsCnPT11W1Omp4UyxzR
+        TctbYYABuauMdP2t7CQusOTLGn8kvJrKh7yUxiQE7vCaIueD+nggCCavrrcKksQi
+        S+HDvgaON0trQV1kffcAlpi8AtG6m2S6hchzmnDqK0nlkWzBTGGFK/r6lQOrl5hl
+        jYI39MHxcWMNye63Yrfm3OV5Jqda/j11LFNCJ2yU51jwuM2KQfpYlmdAU72vBesb
+        F271Mz3SWbIzQlHrPhwHVlN0JIxZS3qYxKqbIFwfmy+pzQRzZdgmaBH5Y9uZqKHn
+        1BG52ELw7c+HxqQvvPlE7t/XDEDDSw9rT90axrkqWe6+FMWftBjicr1k0yVeTjk8
+        tSMJff+F/z2fw47ghrFRqIuxlUUtxz/j3wp1oQ3RdlQEciL2Jb9BtU/yvVHaEw6R
+        5wimG/eVu8N8aw/AVlb5XxgvK/e9sLQIry/H5pSEc9VEd6D40VS9bitUYS68Az/C
+        jhzbfTRgm6TYjZ4oOagLBvrGE3G43O/RWkwRujLdJgFLW4/Ba1GIlRoyEyAJrogg
+        G5VNY/lllwNF06PZvTDRoSMIzycdisVed1abw9f8aA+K7WOsFhV0qFXPbcWKOdIz
+        hj9Ru6Cxp6w=
+        -----END CERTIFICATE-----
+      tls.key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpQIBAAKCAQEAuDOV5JeMfGDFbDzyqTUiw/7pr139IImpJwc7Cqzj/2wwxo30
+        C4HzBDFVodRLBZTxBd8zNCKaJIoxro8jn7rd6DbsA8KkwcPG8nAFDPOpjrgEYkfz
+        Yx7pKryd6le+q8xMlEw0ddMK+nAoTv8tW6BZWQcPVFnukjakYGoucfipZTAiSRWM
+        PM8XpB/P5ovZVqQJedzkk7cuVckoc9Z2NgT/DcSinWTEIsFJcuAjCfN2i78IFQ4O
+        MQzeCiNGn81rfweec3KPv24dNvXAPgOAFSLF0zjVSavnV1bdLDQ5Lr5HYxi92FKv
+        7mc7+MSWvmI09VvnAph63KBtzotKdD/2pXtmCQIDAQABAoIBAQCNqY6jyTGQDlSG
+        07DEFUtxdMB/0Eb2GSjwDQ2JPkHylGBGs7F2kDA3j0GOPdicqFlc7LVSaTIm2+kt
+        mIQLOgmjp2mH0tAm/Mwqc6BOv64tRrSIaVFzb7he18STD3xiX7KdcqX935rX1B4L
+        8xANIZrVbyqI8skZxdBRHhguKtEMMdRBRfzw74/72kz8Wl4ircKJDkvXUfmfCKue
+        7+7ObJ0dO2eBSEo6eojnWkXmoSBsxCD1hw2sq0ug71ON0wEeCbBrJOjQUOsUvhFH
+        98VehC0qUY4BCbabv2PirbniFfAcMxuibkDuJQuzrxbeTLr+E7oXljWwgtsIBfCi
+        ZmbU96GpAoGBAOI5EKztFW/u1giqQiIzkBd9otQw49yw78PbhGV7ei3M61t1Vi6r
+        78M3WcUEFB5TSFvKd5S82aGwhsoITrTgYRalSVL3We6kUuJYsj5CXEzPxYk2WW0P
+        yaQaEeDCWylZC5igwgnewdT7OIzK771nnSwWbYoOZVvamoMPxFpeLJJ/AoGBANBy
+        ix0PKAVKJZmm2iJC7L+OIGt6SslF/9lbV6dawyhnAs0r+qfbYcvJgxHSHEyj/y6Y
+        Dhz0Hnh52+7glNAnCDiGhylaRMhM7IZSFmIA4uCDn97KCAI9xOmpsC7q2/hPf2Wc
+        74AOifnBFKUu94EJl3o/eYJCTqMr/9m6ACPQbDN3AoGBAKUbsSgFAZhoYJ6CZTJB
+        H/GFKMplxGjWWqhAFylaLZov7bcatIPryVpZk5NPnr9jWXRlGVHdY5m3FSlvVsJ8
+        4V990z5SebjLBhNdWPpHxMXq/uleWXZYB3tV66Z3M8HB08zZx8UcZ6vijytzEfbT
+        IMuEsv4H88JOkmcFovGxuiZRAoGBAJTfGcfZSUXt3MjOR8Bsd9WfVjwsjTkOy1mb
+        SRD3W6aBW5jZLh2wKzp2YyvZGekKv3exlXLMTu7QaWlD8ERxfAeS3PmFxNYhSlPs
+        UJwR8fdTSly9gdbH8tjHHlOD3TKM5HnYCZ01xQkhAvOuhYodJZhjuQ50+ODEzefc
+        Vbk+Y+ilAoGAJZljdrSmvH+I4uOgeDxjI+vDcJjxRpP1/jFrfVpez368PK3sj6vk
+        jehiE337+VvkXpGMdCyMHFAGvaB5p2URPZ9ekWkCz35FtgfZ5uB+QoWnn94NPC0y
+        3YN2JHi2rTLiuOiWpnp19vJmj5rawC0iatDSrtrqg1jWdY6eqFwJgkI=
+        -----END RSA PRIVATE KEY-----
+    enableContourHttpProxy: false
+    harborAdminPassword: Eo1C28ANodKFmoNQ
+    secretKey: CFbcoIimPaaxlzIF
+    database:
+      password: 2NVlqclAwSAkgSQZ
+    core:
+      replicas: 1
+      secret: n46YDKTP3XxkoVpa
+      xsrfKey: nbbKMXjH81NcoF8SrFxNhN4KIoVJTjSn
+    jobservice:
+      replicas: 1
+      secret: NADDcpRNL1DxYloT
+    registry:
+      replicas: 1
+      secret: pWY6ytq4UnIqOU7z
+    notary:
+      enabled: false
+    trivy:
+      enabled: true
+      replicas: 1
+      gitHubToken: ""
+      skipUpdate: false
+    persistence:
+      persistentVolumeClaim:
+        registry:
+          existingClaim: ""
+          storageClass: ""
+          subPath: ""
+          accessMode: ReadWriteOnce
+          size: 10Gi
+        jobservice:
+          existingClaim: ""
+          storageClass: ""
+          subPath: ""
+          accessMode: ReadWriteOnce
+          size: 1Gi
+        database:
+          existingClaim: ""
+          storageClass: ""
+          subPath: ""
+          accessMode: ReadWriteOnce
+          size: 1Gi
+        redis:
+          existingClaim: ""
+          storageClass: ""
+          subPath: ""
+          accessMode: ReadWriteOnce
+          size: 1Gi
+        trivy:
+          existingClaim: ""
+          storageClass: ""
+          subPath: ""
+          accessMode: ReadWriteOnce
+          size: 5Gi
+      imageChartStorage:
+        disableredirect: false
+        type: filesystem
+        filesystem:
+          rootdirectory: /storage
+        azure:
+          accountname: accountname
+          accountkey: base64encodedaccountkey
+          container: containername
+          realm: core.windows.net
+        gcs:
+          bucket: bucketname
+          encodedkey: base64-encoded-json-key-file
+          rootdirectory: null
+          chunksize: 5242880
+        s3:
+          region: us-west-1
+          bucket: bucketname
+          accesskey: null
+          secretkey: null
+          regionendpoint: null
+          encrypt: false
+          keyid: null
+          secure: true
+          v4auth: true
+          chunksize: null
+          rootdirectory: null
+          storageclass: STANDARD
+        swift:
+          authurl: https://storage.myprovider.com/v3/auth
+          username: username
+          password: password
+          container: containername
+          region: null
+          tenant: null
+          tenantid: null
+          domain: null
+          domainid: null
+          trustid: null
+          insecureskipverify: null
+          chunksize: null
+          prefix: null
+          secretkey: null
+          accesskey: null
+          authversion: null
+          endpointtype: null
+          tempurlcontainerkey: null
+          tempurlmethods: null
+        oss:
+          accesskeyid: accesskeyid
+          accesskeysecret: accesskeysecret
+          region: regionname
+          bucket: bucketname
+          endpoint: null
+          internal: null
+          encrypt: null
+          secure: null
+          chunksize: null
+          rootdirectory: null
+    proxy:
+      httpProxy:
+      httpsProxy:
+      noProxy: 127.0.0.1,localhost,.local,.internal
+    pspNames: null
+    metrics:
+      enabled: false
+      core:
+        path: /metrics
+        port: 8001
+      registry:
+        path: /metrics
+        port: 8001
+      exporter:
+        path: /metrics
+        port: 8001
