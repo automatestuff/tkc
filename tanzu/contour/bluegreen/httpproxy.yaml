@@ -1,0 +1,14 @@
+# httpproxy.yaml
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: basic
+spec:
+  virtualhost:
+    fqdn: bluegreen.aws.automatestuff.io
+  routes:
+    - conditions:
+      - prefix: /
+      services:
+        - name: green-wordpress
+          port: 80
